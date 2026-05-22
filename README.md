@@ -29,3 +29,12 @@ pip install -r requirements.txt
 1. Criar um ficheiro `.env` na raiz do repositório (não é versionado).
 2. Usar `.env.example` como referência.
 3. Ajustar os valores de acordo com o ambiente (dev/prod).
+
+## Configuração MySQL
+Exemplo de configuração no `.env`:
+- `DB_ENGINE=django.db.backends.mysql`
+- `DB_NAME=projeto_db`
+- `DB_USER=projeto_user`
+- `DB_PASSWORD=projeto_password`
+- `DB_HOST=db`
+- `DB_PORT=3306`
