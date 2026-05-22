@@ -4,10 +4,18 @@
 
 {% block content %}
 <h1>Utilizadores</h1>
-<p>Página com listagem de utilizadores registados.</p>
+
+{% if utilizadores %}
 <ul>
-    <li>Utilizador exemplo A</li>
-    <li>Utilizador exemplo B</li>
-    <li>Utilizador exemplo C</li>
+    {% for utilizador in utilizadores %}
+    <li style="margin-bottom: 0.8rem;">
+        <strong>{{ utilizador.nome }}</strong> ({{ utilizador.email }})
+        <br>
+        Publicações: {{ utilizador.publicacoes.count }}
+    </li>
+    {% endfor %}
 </ul>
+{% else %}
+<p>Não existem utilizadores registados.</p>
+{% endif %}
 {% endblock %}

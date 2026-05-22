@@ -4,6 +4,19 @@
 
 {% block content %}
 <h1>Bem-vindo à Mini Rede Social</h1>
-<p>Esta aplicação demonstra uma estrutura Django com múltiplas páginas e dados dinâmicos.</p>
-<p>Usa a navegação acima para explorar as secções.</p>
+<p>Utilizadores registados: <strong>{{ total_utilizadores }}</strong></p>
+<p>Total de publicações: <strong>{{ total_publicacoes }}</strong></p>
+
+<h2>Últimas publicações</h2>
+{% if ultimas_publicacoes %}
+<ul>
+    {% for publicacao in ultimas_publicacoes %}
+    <li>
+        <strong>{{ publicacao.autor.nome }}</strong>: {{ publicacao.conteudo|truncatechars:80 }}
+    </li>
+    {% endfor %}
+</ul>
+{% else %}
+<p>Ainda não existem publicações.</p>
+{% endif %}
 {% endblock %}

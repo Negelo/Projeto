@@ -4,10 +4,16 @@
 
 {% block content %}
 <h1>Publicações</h1>
-<p>Página dedicada à listagem de publicações da comunidade.</p>
-<ul>
-    <li>Exemplo de publicação 1</li>
-    <li>Exemplo de publicação 2</li>
-    <li>Exemplo de publicação 3</li>
-</ul>
+
+{% if publicacoes %}
+    {% for publicacao in publicacoes %}
+    <article style="border-bottom: 1px solid #ddd; padding: 0.8rem 0;">
+        <p><strong>{{ publicacao.autor.nome }}</strong> · {{ publicacao.criado_em|date:"d/m/Y H:i" }}</p>
+        <p>{{ publicacao.conteudo }}</p>
+        <p>Likes: {{ publicacao.likes }} | Comentários: {{ publicacao.comentarios.count }}</p>
+    </article>
+    {% endfor %}
+{% else %}
+<p>Não existem publicações para mostrar.</p>
+{% endif %}
 {% endblock %}
