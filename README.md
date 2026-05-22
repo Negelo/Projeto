@@ -7,3 +7,20 @@ Implementar uma aplicação web com Django, base de dados MySQL, Docker e Docker
 
 ## Estado atual
 Estrutura inicial do projeto criada.
+## Ambiente virtual e dependências
+
+### Windows (PowerShell)
+```powershell
+py -m venv .venv
+.\.venv\Scripts\Activate.ps1
+pip install --upgrade pip
+pip install -r requirements.txt
+```
+
+### Linux/macOS
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install --upgrade pip
+pip install -r requirements.txt
+```
