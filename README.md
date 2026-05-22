@@ -49,3 +49,14 @@ Execução:
 ```bash
 docker run --rm -p 8000:8000 --env-file .env projeto-django
 ```
+
+## Docker Compose
+Subir serviços (Django + MySQL):
+```bash
+docker compose up --build
+```
+
+Parar serviços:
+```bash
+docker compose down
+```
