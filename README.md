@@ -38,3 +38,14 @@ Exemplo de configuração no `.env`:
 - `DB_PASSWORD=projeto_password`
 - `DB_HOST=db`
 - `DB_PORT=3306`
+
+## Dockerfile
+Build da imagem:
+```bash
+docker build -t projeto-django .
+```
+
+Execução:
+```bash
+docker run --rm -p 8000:8000 --env-file .env projeto-django
+```
