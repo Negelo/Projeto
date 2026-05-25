@@ -1,6 +1,4 @@
-﻿version: '3.9'
-
-services:
+﻿services:
   db:
     image: mysql:8.4
     container_name: projeto_db
@@ -10,8 +8,6 @@ services:
       MYSQL_USER: ${DB_USER}
       MYSQL_PASSWORD: ${DB_PASSWORD}
       MYSQL_ROOT_PASSWORD: root_password
-    ports:
-      - "3306:3306"
     volumes:
       - mysql_data:/var/lib/mysql
     healthcheck:

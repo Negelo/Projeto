@@ -4,13 +4,125 @@
 
 {% block content %}
 <h1>Publicações</h1>
+<form method="post" style="border: 1px solid #ddd; padding: 0.8rem; border-radius: 8px; margin-bottom: 1rem;">
+    {% csrf_token %}
+    <input type="hidden" name="acao" value="publicar_imagem">
+    <div style="margin-bottom: 0.5rem;">
+        <label for="novo-post-utilizador">Utilizador:</label>
+        <select id="novo-post-utilizador" name="utilizador_id" required>
+            <option value="" selected disabled>Seleciona um utilizador</option>
+            {% for utilizador in utilizadores %}
+            <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+            {% endfor %}
+        </select>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <label for="nova-imagem-url">URL da imagem:</label>
+        <input id="nova-imagem-url" type="url" name="image_url" placeholder="https://exemplo.com/imagem.jpg" required>
+    </div>
+    <div style="margin-bottom: 0.5rem;">
+        <label for="nova-imagem-caption">Caption:</label>
+        <input id="nova-imagem-caption" type="text" name="caption" placeholder="Escreve uma legenda (opcional)">
+    </div>
+    <button type="submit">Publicar imagem com caption</button>
+</form>
 
 {% if publicacoes %}
     {% for publicacao in publicacoes %}
     <article style="border-bottom: 1px solid #ddd; padding: 0.8rem 0;">
-        <p><strong>{{ publicacao.autor.nome }}</strong> · {{ publicacao.criado_em|date:"d/m/Y H:i" }}</p>
-        <p>{{ publicacao.conteudo }}</p>
-        <p>Likes: {{ publicacao.likes }} | Comentários: {{ publicacao.comentarios.count }}</p>
+        <p><strong>{{ publicacao.obj.autor.nome }}</strong> · {{ publicacao.obj.criado_em|date:"d/m/Y H:i" }}</p>
+        {% if publicacao.image_url %}
+        <img src="{{ publicacao.image_url }}" alt="Imagem da publicação" style="max-width: 100%; border-radius: 8px; margin: 0.5rem 0;">
+        {% if publicacao.caption %}
+        <p><em>{{ publicacao.caption }}</em></p>
+        {% endif %}
+        {% else %}
+        <p>{{ publicacao.obj.conteudo }}</p>
+        {% endif %}
+        <p>Likes: {{ publicacao.obj.likes }} | Comentários: {{ publicacao.obj.comentarios.count }}</p>
+        <form method="post" style="margin-top: 0.5rem;">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="like">
+            <input type="hidden" name="publicacao_id" value="{{ publicacao.obj.id }}">
+            <label for="like-utilizador-{{ publicacao.obj.id }}">Utilizador:</label>
+            <select id="like-utilizador-{{ publicacao.obj.id }}" name="utilizador_id" required>
+                <option value="" selected disabled>Seleciona um utilizador</option>
+                {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+                {% endfor %}
+            </select>
+            <button type="submit">Dar like</button>
+        </form>
+        <form method="post" style="margin-top: 0.5rem;">
+            {% csrf_token %}
+            <input type="hidden" name="acao" value="comentar">
+            <input type="hidden" name="publicacao_id" value="{{ publicacao.obj.id }}">
+            <label for="autor-{{ publicacao.obj.id }}">Autor:</label>
+            <select id="autor-{{ publicacao.obj.id }}" name="utilizador_id" required>
+                <option value="" selected disabled>Seleciona um utilizador</option>
+                {% for utilizador in utilizadores %}
+                <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+                {% endfor %}
+            </select>
+            <label for="texto-{{ publicacao.obj.id }}">Comentário:</label>
+            <input id="texto-{{ publicacao.obj.id }}" type="text" name="texto" maxlength="500" required>
+            <button type="submit">Adicionar comentário</button>
+        </form>
+        {% if publicacao.obj.comentarios.all %}
+        <div style="margin-top: 0.4rem;">
+            {% for comentario in publicacao.obj.comentarios.all %}
+            <p style="margin: 0.2rem 0; font-size: 0.95rem;">
+                <strong>{{ comentario.autor.nome }}:</strong> {{ comentario.texto }}
+            </p>
+            {% endfor %}
+        </div>
+        {% endif %}
+        <details style="margin-top: 0.6rem;">
+            <summary>Opções de remoção</summary>
+            <form method="post" style="margin-top: 0.5rem;">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="remover_publicacao">
+                <input type="hidden" name="publicacao_id" value="{{ publicacao.obj.id }}">
+                <label for="remover-publicacao-utilizador-{{ publicacao.obj.id }}">Remover publicação (autor):</label>
+                <select id="remover-publicacao-utilizador-{{ publicacao.obj.id }}" name="utilizador_id" required>
+                    <option value="" selected disabled>Seleciona o autor</option>
+                    {% for utilizador in utilizadores %}
+                    <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Remover publicação</button>
+            </form>
+            <form method="post" style="margin-top: 0.5rem;">
+                {% csrf_token %}
+                <input type="hidden" name="acao" value="remover_like">
+                <input type="hidden" name="publicacao_id" value="{{ publicacao.obj.id }}">
+                <label for="unlike-utilizador-{{ publicacao.obj.id }}">Remover like (utilizador):</label>
+                <select id="unlike-utilizador-{{ publicacao.obj.id }}" name="utilizador_id" required>
+                    <option value="" selected disabled>Seleciona um utilizador</option>
+                    {% for utilizador in utilizadores %}
+                    <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+                    {% endfor %}
+                </select>
+                <button type="submit">Remover like</button>
+            </form>
+            {% if publicacao.obj.comentarios.all %}
+                {% for comentario in publicacao.obj.comentarios.all %}
+                <form method="post" style="margin-top: 0.5rem;">
+                    {% csrf_token %}
+                    <input type="hidden" name="acao" value="remover_comentario">
+                    <input type="hidden" name="comentario_id" value="{{ comentario.id }}">
+                    <label for="remover-comentario-utilizador-{{ comentario.id }}">Remover comentário #{{ comentario.id }} (autor):</label>
+                    <select id="remover-comentario-utilizador-{{ comentario.id }}" name="utilizador_id" required>
+                        <option value="" selected disabled>Seleciona o autor</option>
+                        {% for utilizador in utilizadores %}
+                        <option value="{{ utilizador.id }}">{{ utilizador.nome }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Remover comentário</button>
+                </form>
+                {% endfor %}
+            {% endif %}
+        </details>
     </article>
     {% endfor %}
 {% else %}
